@@ -8,6 +8,8 @@ import bodyParser from 'body-parser';
 
 import routes from './routes';
 
+const db = require("./database.js");
+
 const DIST_DIR = path.join(__dirname, 'public');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 

@@ -1,4 +1,4 @@
-import initApp from './app';
+const initApp = require('./app').default;
 
 const PORT = process.env.PORT || 3000;
 
