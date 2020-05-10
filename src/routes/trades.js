@@ -1,5 +1,7 @@
 const tradeDbAccessor = require('../data-access/trade');
 const Errors = require('../common/errors');
+const tradesHelper = require('../common/trades-helper');
+const _ = require('lodash');
 
 const addTrade = async (req, res) => {
   try {
@@ -8,7 +10,7 @@ const addTrade = async (req, res) => {
       throw Errors.TradeExists;
     }
     await tradeDbAccessor.save(req.body);
-    res.status(201).send();
+    res.status(201).json({});
   } catch(err) {
     res.status(400).json(err)
   }
@@ -16,8 +18,8 @@ const addTrade = async (req, res) => {
 
 const getAllTrades = async (req, res) => {
   try {
-    let trades = await tradeDbAccessor.getAll();
-    res.json(trades);
+    let trades = await tradeDbAccessor.getAll(); 
+    res.json(tradesHelper.responseFormatter(trades));
   } catch(err) {
     res.status(400).json(err)
   }
@@ -26,23 +28,20 @@ const getAllTrades = async (req, res) => {
 const getTradesByUserId = async (req, res) => {
   try {
     let trades = await tradeDbAccessor.getTradesByUserId(req.params.user_id);
-    res.json(trades);
+    if (_.isEmpty(trades)) {
+      throw Errors.TradeNotFoundForUser;
+    }
+    res.json(tradesHelper.responseFormatter(trades));
   } catch(err) {
-    res.status(400).json(err)
+    if (err.message == "TradeNotFoundForUser") {
+      res.status(404).json({})
+    } else {
+      res.status(400).json(err)
+    }
   }
 }
-
-const getFilteredTrades = async (req, res) => {
-  try {
-    let trades = await tradeDbAccessor.getFilteredTrades(req);
-    res.json(trades);
-  } catch(err) {
-    res.status(400).json(err)
-  }
-}
-
 /**
  * Add more trade routes here
  */
 
-export { addTrade, getAllTrades, getTradesByUserId, getFilteredTrades };
+export { addTrade, getAllTrades, getTradesByUserId };

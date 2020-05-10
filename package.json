@@ -10,7 +10,8 @@
     "start": "npm run build && npm-run-all -p watch server",
     "test": "npm run build && ./node_modules/.bin/mocha test",
     "lint": "./node_modules/.bin/eslint ./src",
-    "fix": "./node_modules/.bin/eslint ./src --fix"
+    "fix": "./node_modules/.bin/eslint ./src --fix",
+    "debug": "nodemon --inspect -r esm ./src/server"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
     "cookie-parser": "^1.4.5",
     "esm": "^3.2.25",
     "express": "^4.17.1",
+    "lodash": "^4.17.15",
     "morgan": "^1.10.0",
     "sqlite3": "^4.2.0"
   },

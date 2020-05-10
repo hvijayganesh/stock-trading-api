@@ -61,12 +61,35 @@ module.exports = {
     }) 
   },
 
-  getFilteredTrades(request) {
-    let { symbol } = request.params
-    let { type, start, end } = request.query;
+  getStocksBySymbolAndType(args) {
     return new Promise(function(resolve, reject) {
-        let sql = "Select * from trade where symbol = ? and type = ? and timestamp between ? and ? order by id"
-        let params = [symbol, type, start, end]
+        let sql = "Select * from trade where symbol = ? and type = ? and DATE(timestamp) between ? and ? order by id"
+        let params = [args.symbol, args.type, args.start, args.end]
+        db.all(sql, params, function(err, rows)  {
+            if(err) reject("Read error: " + err.message)
+            else {
+              resolve(rows)
+            }
+        })
+    }) 
+  },
+
+  checkIfSymbolExists(symbol) {
+    return new Promise(function(resolve, reject) {
+        let sql = "Select * from trade where symbol = ?"
+        db.all(sql, [symbol], function(err, rows)  {
+            if(err) reject("Read error: " + err.message)
+            else {
+              resolve(rows)
+            }
+        })
+    }) 
+  },
+
+  getStockPrice(args) {
+    return new Promise(function(resolve, reject) {
+        let sql = "Select * from trade where symbol = ? and DATE(timestamp) between ? and ? order by id"
+        let params = [args.symbol, args.start, args.end]
         db.all(sql, params, function(err, rows)  {
             if(err) reject("Read error: " + err.message)
             else {
